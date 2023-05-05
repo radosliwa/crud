@@ -1,17 +1,17 @@
 {
-  "private": true,
+  "private": false,
+  "name": "Animalia",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev:client": "turbo run dev:client",
+    "dev:backend": "turbo run dev:backend",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "eslint": "^7.32.0",
-    "eslint-config-custom": "workspace:*",
     "prettier": "^2.5.1",
-    "turbo": "latest"
+    "turbo": "^1.9.3"
   },
-  "packageManager": "pnpm@7.15.0",
-  "name": "Animalia"
+  "packageManager": "pnpm@7.15.0"
 }
