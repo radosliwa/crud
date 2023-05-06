@@ -5,13 +5,16 @@
     "build": "turbo run build",
     "dev:client": "turbo run dev:client",
     "dev:backend": "turbo run dev:backend",
+    "dev:all": "turbo run dev:all",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
     "prettier": "^2.5.1",
-    "turbo": "^1.9.3"
+    "turbo": "^1.9.3",
+    "@vue/eslint-config-typescript": "^11.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-vue": "^9.0.0"
   },
   "packageManager": "pnpm@7.15.0"
 }

@@ -1,11 +1,11 @@
 <!-- eslint-disable vue/valid-v-slot -->
 <template>
-	<v-data-table v-if="desserts.length" :headers="headers" :items="desserts" :sort-by="[{ key: 'name', order: 'asc' }]"
+	<v-data-table v-if="!isLoading" :headers="headers" :items="animals" :sort-by="[{ key: 'name', order: 'asc' }]"
 		class="elevation-1" style="max-width: 600px">
 
 		<template v-slot:top>
 			<v-toolbar flat>
-				<v-toolbar-title>Animals Crud</v-toolbar-title>
+				<v-toolbar-title>Animals CRUD</v-toolbar-title>
 				<v-divider class="mx-4" inset vertical></v-divider>
 				<v-spacer></v-spacer>
 				<v-dialog v-model="dialog" max-width="500px">
@@ -31,7 +31,7 @@
 
 						<v-card-actions>
 							<v-spacer></v-spacer>
-							<v-btn color="blue-darken-1" variant="text" @click="close">
+							<v-btn color="blue-darken-1" variant="text" @click="resetDialogState">
 								Cancel
 							</v-btn>
 							<v-btn color="blue-darken-1" variant="text" @click="save">
@@ -45,7 +45,7 @@
 						<v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
 						<v-card-actions>
 							<v-spacer></v-spacer>
-							<v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
+							<v-btn color="blue-darken-1" variant="text" @click="resetDialogState">Cancel</v-btn>
 							<v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
 							<v-spacer></v-spacer>
 						</v-card-actions>
@@ -54,154 +54,119 @@
 			</v-toolbar>
 		</template>
 		<template v-slot:item="{ item }">
-			<tr :class="item.value.selected ? 'active-row' : ''">
+			<tr :class="selectedId === item.value._id ? 'active-row' : ''" @click="selectItem(item.value)">
 				<td>{{ item.value.name }}</td>
 				<td class="text-right">
-					<v-icon small class="mr-2" @click="editItem(item)">
+					<v-icon small class="mr-2" @click.stop="editItem(item.value)">
 						mdi-pencil
 					</v-icon>
-					<v-icon small @click="deleteItem(item)">
+					<v-icon small @click.stop="deleteItem(item.value)">
 						mdi-delete
 					</v-icon>
 				</td>
 			</tr>
 		</template>
-		<template v-slot:no-data>
-			<v-btn color="primary" @click="initialize">
-				Reset
-			</v-btn>
-		</template>
 	</v-data-table>
-	<v-overlay v-if="loading" :model-value="loading" class="align-center justify-center">
+	<v-overlay v-if="isLoading" :model-value="isLoading" class="align-center justify-center">
 		<v-progress-circular color="primary" indeterminate size="64"></v-progress-circular>
 	</v-overlay>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-
+import { computed, onMounted, ref } from 'vue'
+import { useAnimalsStore } from '@/store/animals'
 import { VDataTable } from 'vuetify/labs/VDataTable'
+import { storeToRefs } from 'pinia'
 
-
-const dialog = ref(false)
-const dialogDelete = ref(false)
-
-const headers = ref<any[]>([
+interface Header {
+	title: string
+	key: string
+	sortable?: boolean
+}
+interface Animal {
+	_id: string;
+	name: string;
+	selected?: boolean;
+	createdAt?: Date;
+}
+const headers: Header[] = [
 	{
 		title: 'Animal Name',
-		align: 'start',
 		key: 'name',
 	},
-	{ title: 'Actions', align: 'end', key: 'actions', sortable: false },
-])
-const desserts = ref<any[]>([])
+	{
+		title: 'Actions',
+		key: 'actions',
+		sortable: false,
+	},
+]
+const store = useAnimalsStore()
 
-const loading = computed(() => desserts.value.length === 0)
+const { getAnimals, isLoading } = storeToRefs(store)
 
-const editedIndex = ref(-1)
-const editedItem = ref({
-	name: '',
-	selected: false,
+const animals = computed(() => getAnimals.value)
 
+const selectedId = ref('')
+
+onMounted(async () => {
+	await store.FETCH_ANIMALS(true)
+	selectedId.value = animals.value.find(({ selected }) => selected)?._id || ''
 })
-const defaultItem = ref({
+
+/** refs for modals */
+const dialog = ref(false)
+const dialogDelete = ref(false)
+const editedIndex = ref(-1)
+const editedItem = ref<Animal>({
+	_id: '',
 	name: '',
 	selected: false,
 })
 
 const formTitle = computed(() => editedIndex.value === -1 ? 'New Item' : 'Edit Item')
 
-const initialize = () => {
-	setTimeout(() => {
-		desserts.value = [
-			{
-				name: 'Frozen Yogurt',
-				selected: true
-			},
-			{
-				name: 'Ice cream sandwich',
-				selected: false
-			},
-			{
-				name: 'Eclair',
-				selected: false
-			},
-			{
-				name: 'Cupcake',
-				selected: false
-			},
-			{
-				name: 'Gingerbread',
-				selected: false
-			},
-			{
-				name: 'Jelly bean',
-				selected: false
-			},
-			{
-				name: 'Lollipop',
-				selected: false
-			},
-			{
-				name: 'Honeycomb',
-				selected: false
-
-			},
-			{
-				name: 'Donut',
-				selected: false
-
-			},
-			{
-				name: 'KitKat',
-				selected: false
-			},
-		]
-	}, 1500);
-}
-initialize()
-
-const editItem = (item: any) => {
-	console.log(item.value)
-	editedIndex.value = desserts.value.indexOf(item)
-	editedItem.value = Object.assign({}, item)
+const editItem = (item: Animal) => {
+	editedIndex.value = animals.value.findIndex(({ _id }) => _id === item._id)
+	editedItem.value = item
 	dialog.value = true
 }
 
-const deleteItem = (item: any) => {
-	editedIndex.value = desserts.value.indexOf(item)
-	editedItem.value = Object.assign({}, item)
+const selectItem = async (item: Animal) => {
+	selectedId.value = selectedId.value === item._id ? '' : item._id
+	await store.UPDATE_ANIMAL(item._id, item.name, item.selected)
+}
+
+const deleteItem = async (item: Animal) => {
+	editedItem.value = item
 	dialogDelete.value = true
 }
 
-const deleteItemConfirm = () => {
-	desserts.value.splice(editedIndex.value, 1)
-	closeDelete()
+const deleteItemConfirm = async () => {
+	await store.DELETE_ANIMAL(editedItem.value._id)
+	resetDialogState()
 }
 
-const close = () => {
-	dialog.value = false
+const resetDialogState = () => {
 	setTimeout(() => {
-		editedItem.value = Object.assign({}, defaultItem.value)
+		dialog.value = false
+		dialogDelete.value = false
 		editedIndex.value = -1
-	}, 300)
+		editedItem.value = {
+			name: '',
+			_id: '',
+			selected: false,
+		}
+	}, 300);
 }
 
-const closeDelete = () => {
-	dialogDelete.value = false
-	setTimeout(() => {
-		editedItem.value = Object.assign({}, defaultItem.value)
-		editedIndex.value = -1
-	}, 300)
-}
-
-const save = () => {
-	if (editedIndex.value > -1) {
-		Object.assign(desserts.value[editedIndex.value], editedItem.value)
-	} else {
-		desserts.value.push(editedItem.value)
+const save = async () => {
+	if (formTitle.value === 'Edit Item') {
+		await store.UPDATE_ANIMAL(editedItem.value._id, editedItem.value.name)
+		resetDialogState()
+		return
 	}
-	close()
+	await store.CREATE_ANIMAL(editedItem.value.name)
+	resetDialogState()
 }
 
 </script>
@@ -210,6 +175,7 @@ const save = () => {
 .v-application .v-theme--dark tr,
 .v-application .v-theme--dark tr td {
 	cursor: pointer;
+	transition: all 0.3s linear !important;
 }
 
 .v-application .v-theme--dark tr.active-row,

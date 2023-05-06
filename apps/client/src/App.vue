@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main class="pa-6 d-flex justify-center align-center">
-      <AnimalsTable class="pb-5" />
+      <AnimalsTable />
       <v-footer :app="true" :border="true" class="bg-indigo-lighten-1 text-center d-flex flex-column pa-4">
         <div class="mt-2">
           {{ new Date().getFullYear() }} — <strong>Radek Śliwa</strong>

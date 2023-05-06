@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Response } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -12,6 +12,14 @@ const GUEST_DB_NAME = process.env.GUEST_DB_NAME;
 const GUEST_DB_PASSWORD = process.env.GUEST_DB_PASSWORD;
 const MONGO_CLUSTER = process.env.MONGO_CLUSTER;
 
+const errorHelper = (err: unknown, res: Response) => {
+  if (err instanceof Error) {
+    res.status(400).json({ message: err.message });
+    return
+  }
+  res.status(400).json({ message: 'An unknown error occurred' });
+}
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,66 +32,91 @@ const connectDB = async () => {
     process.exit(1);
   }
 }
+interface Animal {
+  _id?: string;
+  name: string;
+  selected?: boolean;
+  createdAt?: Date;
+}
 
-const animalSchema = new mongoose.Schema({
-  name: String,
-  selected: Boolean,
-  createdAt: { type: Date, default: Date.now },
+const animalSchema = new mongoose.Schema<Animal>({
+  name: { type: String, required: true },
+  selected: { type: Boolean, default: false },
+  createdAt: { type: Date, required: false },
 });
 
 const Animal = mongoose.model('Animal', animalSchema);
 
-// Routes
 app.get('/', (req, res) => {
   res.send('Welcome to CRUD Animalia!');
 });
 
-// Create
-app.post('/api/items', async (req, res) => {
-  const newItem = new Animal(req.body);
-  await newItem.save();
-  res.status(201).json(newItem);
-});
-
 // Read
-app.get('/api/items', async (req, res) => {
-  const items = await Animal.find();
-  res.json(items);
+app.get('/api/animals', async (req, res) => {
+  const animals = await Animal.find();
+  res.json(animals);
 });
 
-// Update
-app.put('/api/items/:id', async (req, res) => {
-  // Set all animals to unselected
-  await Animal.updateMany({ selected: true }, { $set: { selected: false } });
-  // Set the specified animal to selected
-  const updatedAnimal = await Animal.findByIdAndUpdate(req.params.id, { $set: { selected: true } }, { new: true });
-  res.json(updatedAnimal);
+// POST
+app.post('/api/animals', async (req, res) => {
+  const { name } = req.body;
+  try {
+    const existingAnimal = await Animal.findOne({ name });
+    let newName = name;
+
+    if (existingAnimal) {
+      // Get the count of animals with the same name
+      const nameCount = await Animal.countDocuments({ name: new RegExp(`^${name}\\(\\d+\\)$`, 'i') });
+      // Update the new name to "animal(number of copy)"
+      newName = `${name}(${nameCount + 1})`;
+    }
+    const animal = new Animal({ name: newName });
+    const newAnimal = await animal.save();
+    res.status(201).json(newAnimal);
+
+  } catch (err: unknown) {
+    errorHelper(err, res);
+  }
 });
 
-// Delete
-app.delete('/api/items/:id', async (req, res) => {
+
+app.put('/api/animals/:id', async (req, res) => {
+  try {
+    const { name, selected } = req.body;
+    /* Find the currently selected animal and set its 'selected' field to false
+    as according to the task description only one animal can be selected at a time
+    */
+    await Animal.findOneAndUpdate({ selected: true }, { $set: { selected: false } });
+    const updatedAnimal = await Animal.findOneAndUpdate({ _id: req.params.id }, { $set: { selected: true, name } }, { new: true });
+   
+    if (!updatedAnimal) throw new Error('No animal found');
+    res.json(updatedAnimal);
+
+  } catch (error: unknown) {
+    errorHelper(error, res);
+  }
+});
+
+app.delete('/api/animals/:id', async (req, res) => {
   await Animal.findByIdAndDelete(req.params.id);
   res.status(204).json({ message: 'Animal deleted' });
 });
 
-// Start the server
 const port = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-      const TIMEOUT_MS = 10000; 
-      const connectionPromise = connectDB();
-      const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`Connection timeout after ${TIMEOUT_MS} ms`)), TIMEOUT_MS)
-      );
-      await Promise.race([connectionPromise, timeoutPromise]);
-
-      app.listen(port, () => console.log(`Server is running on port ${port}`));
+    const TIMEOUT_MS = 10000;
+    const connectionPromise = connectDB();
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`Connection timeout after ${TIMEOUT_MS} ms`)), TIMEOUT_MS)
+    );
+    await Promise.race([connectionPromise, timeoutPromise]);
+    app.listen(port, () => console.log(`Server is running on port ${port}`));
   } catch (err) {
-      console.error('Error starting the server:', err);
-      process.exit(1);
+    console.error('Error starting the server:', err);
+    process.exit(1);
   }
 };
-
 
 startServer();

@@ -7,55 +7,85 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const app = (0, express_1.default)();
+const GUEST_DB_NAME = process.env.GUEST_DB_NAME;
+const GUEST_DB_PASSWORD = process.env.GUEST_DB_PASSWORD;
+const MONGO_CLUSTER = process.env.MONGO_CLUSTER;
+const errorHelper = (err, res) => {
+    if (err instanceof Error) {
+        res.status(400).json({ message: err.message });
+        return;
+    }
+    res.status(400).json({ message: 'An unknown error occurred' });
+};
 app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 const connectDB = async () => {
     try {
-        await mongoose_1.default.connect('mongodb+srv://judge:1rYV1Qi7HPvoGF8Z@animaliacluster.otwtzbj.mongodb.net/');
+        await mongoose_1.default.connect(`mongodb+srv://${GUEST_DB_NAME}:${GUEST_DB_PASSWORD}${MONGO_CLUSTER}`);
     }
     catch (error) {
         console.log(`Error connecting to MongoDB Atlas: ${error}`);
         process.exit(1);
     }
 };
-// Create a schema and model for your data
 const animalSchema = new mongoose_1.default.Schema({
-    name: String,
-    selected: Boolean,
-    createdAt: { type: Date, default: Date.now },
+    name: { type: String, required: true },
+    selected: { type: Boolean, default: false },
+    createdAt: { type: Date, required: false },
 });
 const Animal = mongoose_1.default.model('Animal', animalSchema);
-// Routes
 app.get('/', (req, res) => {
     res.send('Welcome to CRUD Animalia!');
 });
-// Create
-app.post('/api/items', async (req, res) => {
-    const newItem = new Animal(req.body);
-    await newItem.save();
-    res.status(201).json(newItem);
-});
 // Read
-app.get('/api/items', async (req, res) => {
-    const items = await Animal.find();
-    res.json(items);
+app.get('/api/animals', async (req, res) => {
+    const animals = await Animal.find();
+    res.json(animals);
 });
-// Update
-app.put('/api/items/:id', async (req, res) => {
-    // Set all animals to unselected
-    await Animal.updateMany({ selected: true }, { $set: { selected: false } });
-    // Set the specified animal to selected
-    const updatedAnimal = await Animal.findByIdAndUpdate(req.params.id, { $set: { selected: true } }, { new: true });
-    res.json(updatedAnimal);
+// POST
+app.post('/api/animals', async (req, res) => {
+    const { name } = req.body;
+    try {
+        const existingAnimal = await Animal.findOne({ name });
+        let newName = name;
+        if (existingAnimal) {
+            // Get the count of animals with the same name
+            const nameCount = await Animal.countDocuments({ name: new RegExp(`^${name}\\(\\d+\\)$`, 'i') });
+            // Update the new name to "animal(number of copy)"
+            newName = `${name}(${nameCount + 1})`;
+        }
+        const animal = new Animal({ name: newName });
+        const newAnimal = await animal.save();
+        res.status(201).json(newAnimal);
+    }
+    catch (err) {
+        errorHelper(err, res);
+    }
 });
-// Delete
-app.delete('/api/items/:id', async (req, res) => {
+app.put('/api/animals/:id', async (req, res) => {
+    try {
+        const { name, selected } = req.body;
+        /* Find the currently selected animal and set its 'selected' field to false
+        as according to the task description only one animal can be selected at a time
+        */
+        await Animal.findOneAndUpdate({ selected: true }, { $set: { selected: false } });
+        const updatedAnimal = await Animal.findOneAndUpdate({ _id: req.params.id }, { $set: { selected: true, name } }, { new: true });
+        if (!updatedAnimal)
+            throw new Error('No animal found');
+        res.json(updatedAnimal);
+    }
+    catch (error) {
+        errorHelper(error, res);
+    }
+});
+app.delete('/api/animals/:id', async (req, res) => {
     await Animal.findByIdAndDelete(req.params.id);
     res.status(204).json({ message: 'Animal deleted' });
 });
-// Start the server
 const port = process.env.PORT || 5000;
 const startServer = async () => {
     try {
