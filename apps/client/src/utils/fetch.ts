@@ -1,7 +1,7 @@
 const baseURL =
   (import.meta.env.VITE_ENDPOINT as string) || "http://localhost:5000/api";
 const MAX_RETRIES = 5;
-const RETRY_INTERVAL = 1000; // 3 seconds
+const RETRY_INTERVAL = 1000;
 
 const fetchAPI = async <T = unknown>(
   endpoint: string = "",

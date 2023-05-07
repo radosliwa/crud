@@ -9,5 +9,10 @@ interface AnimalsState {
   animals: Animal[];
   loading: boolean;
 }
-
-export type { Animal, AnimalsState };
+interface Header {
+  title: string;
+  key: string;
+  sortable?: boolean;
+  align?: "start" | "end";
+}
+export type { Animal, AnimalsState, Header };

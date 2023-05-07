@@ -113,19 +113,8 @@ import { computed, onMounted, ref } from "vue";
 import { useAnimalsStore } from "@/store/animals";
 import { VDataTable } from "vuetify/labs/VDataTable";
 import { storeToRefs } from "pinia";
+import { Animal, Header } from "@/types";
 
-interface Header {
-  title: string;
-  key: string;
-  sortable?: boolean;
-  align?: "start" | "end";
-}
-interface Animal {
-  _id: string;
-  name: string;
-  selected?: boolean;
-  createdAt?: Date;
-}
 const headers: Header[] = [
   {
     title: "Animal Name",
@@ -172,8 +161,8 @@ const editItem = (item: Animal) => {
 };
 
 const selectItem = async (item: Animal) => {
-  selectedId.value = selectedId.value === item._id ? "" : item._id;
-  await store.UPDATE_ANIMAL(item._id, item.name, item.selected);
+  selectedId.value = selectedId.value === item._id ? "" : item._id || "";
+  await store.UPDATE_ANIMAL(item._id || "", item.name, item.selected);
 };
 
 const deleteItem = async (item: Animal) => {
@@ -182,6 +171,7 @@ const deleteItem = async (item: Animal) => {
 };
 
 const deleteItemConfirm = async () => {
+  if (!editedItem.value._id) return;
   await store.DELETE_ANIMAL(editedItem.value._id);
   resetDialogState();
 };
@@ -217,6 +207,8 @@ const save = async () => {
     );
     name = `${name}${copySuffix}`;
   }
+
+  if (!editedItem.value._id) return;
 
   if (isEditMode) {
     await store.UPDATE_ANIMAL(editedItem.value._id, name);
