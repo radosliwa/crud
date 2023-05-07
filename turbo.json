@@ -14,7 +14,11 @@
     "test": {
       "cache": false
     },
-    "build:all": {}
+    "build": {},
+    "lint": {},
+    "build:all": {
+      "dependsOn": ["build"]
+    }
   },
   "globalDependencies": [".eslintrc.js"]
 }

@@ -1,17 +1,6 @@
 import { defineStore } from "pinia";
 import fetch from "@/utils/fetch";
-
-interface Animal {
-  _id?: string;
-  name: string;
-  selected?: boolean;
-  createdAt?: Date;
-}
-
-interface AnimalsState {
-  animals: Animal[];
-  loading: boolean;
-}
+import { Animal, AnimalsState } from "@/types";
 
 export const useAnimalsStore = defineStore("animals", {
   state: (): AnimalsState => ({
@@ -43,7 +32,7 @@ export const useAnimalsStore = defineStore("animals", {
     },
 
     async CREATE_ANIMAL(id: string, name: string): Promise<void> {
-      // Get the count of animals with the same name
+      // Get the count of animals with the same name or copies
       const existingAnimalCount = this.animals.filter((animal) =>
         animal.name.match(new RegExp(`^${name}\\(\\d+\\)$`, "i"))
       ).length;
