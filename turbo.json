@@ -20,5 +20,5 @@
       "dependsOn": ["build"]
     }
   },
-  "globalDependencies": [".eslintrc.js"]
+  "globalDependencies": [".eslintrc.js", ".env"]
 }
