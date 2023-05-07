@@ -1,5 +1,4 @@
-// @TODO env
-const baseURL = "http://localhost:5000/api";
+const baseURL = import.meta.env.VITE_ENDPOINT as string;
 const MAX_RETRIES = 5;
 const RETRY_INTERVAL = 1000; // 3 seconds
 

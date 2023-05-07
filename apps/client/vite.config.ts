@@ -1,12 +1,9 @@
-// Plugins
 import vue from "@vitejs/plugin-vue";
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
-// Utilities
 import { defineConfig } from "vite";
 import { fileURLToPath, URL } from "node:url";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue({
@@ -25,5 +22,18 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    coverage: {
+      provider: "istanbul",
+      exclude: ["**/node_modules/**", "**/dist/**"],
+    },
+    // @TODO - make it work with vuetify 3
+    // deps: {
+    //   inline: ["vuetify"],
+    // },
+    exclude: ["node_modules", "**/node_modules/**", "**/dist/**"],
   },
 });

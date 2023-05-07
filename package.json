@@ -1,10 +1,6 @@
 {
   "private": false,
   "name": "animalia-crud",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "build": "turbo run build",
     "dev:client": "turbo run dev:client",

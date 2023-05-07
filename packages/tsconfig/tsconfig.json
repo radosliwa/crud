@@ -13,7 +13,8 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["vuetify"],
+    "types": ["vuetify","vite/client",
+    "vitest/globals"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   // "references": [{ "path": "./tsconfig.node.json" }],

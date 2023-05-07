@@ -11,6 +11,9 @@
       "dependsOn": ["dev:backend", "dev:client"],
       "cache": false
     },
+    "test": {
+      "cache": false
+    },
     "build:all": {}
   },
   "globalDependencies": [".eslintrc.js"]
