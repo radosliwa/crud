@@ -25,7 +25,7 @@ const fetchAPI = async <T = unknown>(
     }
 
     // Delete scenario
-    if (!response.body && response.status === 204) return "Item deleted" as T;
+    if (response.status === 204) return "Item deleted" as T;
     const parsed = await response.json();
     return parsed;
   } catch (error) {

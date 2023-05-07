@@ -29,6 +29,7 @@
                   <v-row>
                     <v-col cols="12">
                       <v-text-field
+                        autofocus
                         v-model="editedItem.name"
                         label="Animal name"
                       ></v-text-field>
@@ -109,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useAnimalsStore } from "@/store/animals";
 import { VDataTable } from "vuetify/labs/VDataTable";
 import { storeToRefs } from "pinia";
@@ -207,6 +208,11 @@ const save = async () => {
     name = `${name}${copySuffix}`;
   }
 
+  // @TODO - figure out a way to do that in Vuetify
+  if (name.length > 20) {
+    name = `${name.slice(0, 20)}...`;
+  }
+
   if (isEditMode) {
     await store.UPDATE_ANIMAL(editedItem.value._id || "", name);
     resetDialogState();
@@ -215,6 +221,10 @@ const save = async () => {
   await store.CREATE_ANIMAL(editedItem.value._id || "", name);
   resetDialogState();
 };
+
+watch(dialog, (v) => !v && resetDialogState());
+watch(dialogDelete, (v) => !v && resetDialogState());
+
 </script>
 
 <style>

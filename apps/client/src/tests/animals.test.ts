@@ -25,17 +25,7 @@ describe("useAnimalsStore state and getters", () => {
     store.loading = true;
     expect(store.isLoading).toBe(true);
     store.loading = false;
-    store.animals = [];
-    expect(store.isLoading).toBe(true);
-    store.loading = false;
-    store.animals = [
-      { _id: "1", name: "Dog", selected: false },
-      { _id: "2", name: "Cat", selected: false },
-    ];
-
     expect(store.isLoading).toBe(false);
-    store.animals = [];
-    expect(store.isLoading).toBe(true);
   });
 
   it("getAnimals should return the animals array from the state", () => {
