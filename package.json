@@ -1,11 +1,11 @@
 {
   "private": false,
-  "name": "Animalia",
+  "name": "animalia-crud",
   "scripts": {
     "build": "turbo run build",
     "dev:client": "turbo run dev:client",
     "dev:backend": "turbo run dev:backend",
-    "dev:all": "turbo run dev:all",
+    "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

@@ -7,8 +7,8 @@
     "dev:backend": {
       "cache": false
     },
-    "dev:all": {
-      "dependsOn": ["dev:client", "dev:backend"],
+    "dev": {
+      "dependsOn": ["dev:backend", "dev:client"],
       "cache": false
     },
     "build:all": {}

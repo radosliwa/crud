@@ -1,7 +1,14 @@
 <template>
   <v-app>
+    <v-toolbar dark prominent image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg" class="bg-indigo d-flex">
+      <v-toolbar-title>
+        <h1 class="text-h4">
+          CRUD for a list - technical assessment
+        </h1>
+      </v-toolbar-title>
+    </v-toolbar>
     <v-main class="pa-6 d-flex justify-center align-center">
-      <AnimalsTable />
+      <TableContainer />
       <v-footer :app="true" :border="true" class="bg-indigo-lighten-1 text-center d-flex flex-column pa-4">
         <div class="mt-2">
           {{ new Date().getFullYear() }} — <strong>Radek Śliwa</strong>
@@ -12,5 +19,5 @@
 </template>
 
 <script setup lang="ts">
-import AnimalsTable from './components/AnimalsTable.vue';
+import TableContainer from '@/components/TableContainer.vue';
 </script>

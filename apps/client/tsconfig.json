@@ -1,11 +1,14 @@
 {
   "extends": "tsconfig/tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
     },
-    "lib": ["DOM.Iterable"]
+    "lib": ["DOM.Iterable", "DOM"]
   },
-  "references": [{ "path": "tsconfig/tsconfig.node.json" }],
-  "exclude": ["node_modules"]
+  // "references": [{ "path": "../../packages/tsconfig/tsconfig.node.json" }],
+  "exclude": ["node_modules"],
+  "include": ["vite.config.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+
 }

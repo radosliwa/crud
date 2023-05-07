@@ -57,6 +57,7 @@ importers:
       eslint-plugin-vue: ^9.0.0
       pinia: ^2.0.23
       roboto-fontface: '*'
+      tsconfig: workspace:*
       typescript: ^5.0.0
       vite: ^4.2.0
       vite-plugin-vuetify: ^1.0.0
@@ -79,6 +80,7 @@ importers:
       '@vue/eslint-config-typescript': 11.0.3_7ntaozazn6u7xxl3xxcxahusia
       eslint: 8.39.0
       eslint-plugin-vue: 9.11.0_eslint@8.39.0
+      tsconfig: link:../../packages/tsconfig
       typescript: 5.0.4
       vite: 4.3.5_@types+node@18.16.4
       vite-plugin-vuetify: 1.0.2_oel56pjet7u2twrlcerhunbop4

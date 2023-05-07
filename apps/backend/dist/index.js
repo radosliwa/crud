@@ -18,7 +18,7 @@ const errorHelper = (err, res) => {
         res.status(400).json({ message: err.message });
         return;
     }
-    res.status(400).json({ message: 'An unknown error occurred' });
+    res.status(400).json({ message: "An unknown error occurred" });
 };
 app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
@@ -37,28 +37,20 @@ const animalSchema = new mongoose_1.default.Schema({
     selected: { type: Boolean, default: false },
     createdAt: { type: Date, required: false },
 });
-const Animal = mongoose_1.default.model('Animal', animalSchema);
-app.get('/', (req, res) => {
-    res.send('Welcome to CRUD Animalia!');
+const Animal = mongoose_1.default.model("Animal", animalSchema);
+app.get("/", (req, res) => {
+    res.send("Welcome to CRUD Animalia!");
 });
 // Read
-app.get('/api/animals', async (req, res) => {
+app.get("/api/animals", async (req, res) => {
     const animals = await Animal.find();
     res.json(animals);
 });
 // POST
-app.post('/api/animals', async (req, res) => {
+app.post("/api/animals", async (req, res) => {
     const { name } = req.body;
     try {
-        const existingAnimal = await Animal.findOne({ name });
-        let newName = name;
-        if (existingAnimal) {
-            // Get the count of animals with the same name
-            const nameCount = await Animal.countDocuments({ name: new RegExp(`^${name}\\(\\d+\\)$`, 'i') });
-            // Update the new name to "animal(number of copy)"
-            newName = `${name}(${nameCount + 1})`;
-        }
-        const animal = new Animal({ name: newName });
+        const animal = new Animal({ name });
         const newAnimal = await animal.save();
         res.status(201).json(newAnimal);
     }
@@ -66,25 +58,25 @@ app.post('/api/animals', async (req, res) => {
         errorHelper(err, res);
     }
 });
-app.put('/api/animals/:id', async (req, res) => {
+app.put("/api/animals/:id", async (req, res) => {
     try {
-        const { name, selected } = req.body;
+        const { name } = req.body;
         /* Find the currently selected animal and set its 'selected' field to false
         as according to the task description only one animal can be selected at a time
         */
         await Animal.findOneAndUpdate({ selected: true }, { $set: { selected: false } });
         const updatedAnimal = await Animal.findOneAndUpdate({ _id: req.params.id }, { $set: { selected: true, name } }, { new: true });
         if (!updatedAnimal)
-            throw new Error('No animal found');
+            throw new Error("No animal found");
         res.json(updatedAnimal);
     }
     catch (error) {
         errorHelper(error, res);
     }
 });
-app.delete('/api/animals/:id', async (req, res) => {
+app.delete("/api/animals/:id", async (req, res) => {
     await Animal.findByIdAndDelete(req.params.id);
-    res.status(204).json({ message: 'Animal deleted' });
+    res.status(204).json({ message: "Animal deleted" });
 });
 const port = process.env.PORT || 5000;
 const startServer = async () => {
@@ -96,7 +88,7 @@ const startServer = async () => {
         app.listen(port, () => console.log(`Server is running on port ${port}`));
     }
     catch (err) {
-        console.error('Error starting the server:', err);
+        console.error("Error starting the server:", err);
         process.exit(1);
     }
 };

@@ -37,15 +37,26 @@ export const useAnimalsStore = defineStore("animals", {
         if (enableLoader) {
           setTimeout(() => {
             this.loading = false;
-          }, 300);
+          }, 200);
         }
       }
     },
 
-    async CREATE_ANIMAL(name: string): Promise<void> {
+    async CREATE_ANIMAL(id: string, name: string): Promise<void> {
+      // Get the count of animals with the same name
+      const existingAnimalCount = this.animals.filter((animal) =>
+        animal.name.match(new RegExp(`^${name}\\(\\d+\\)$`, "i"))
+      ).length;
+
+      if (existingAnimalCount) {
+        // Update the new name to "animal(number of copy)"
+        name = `${name}(${existingAnimalCount + 1})`;
+        console.log(`🟢 name`, name, existingAnimalCount);
+      }
+
       try {
         await fetch<Animal>("/animals", "POST", { name });
-        await this.FETCH_ANIMALS(true);
+        this.FETCH_ANIMALS(true);
       } catch (error) {
         console.error("Error creating animal:", error);
       }
@@ -58,7 +69,7 @@ export const useAnimalsStore = defineStore("animals", {
     ): Promise<void> {
       try {
         await fetch<Animal>(`/animals/${id}`, "PUT", { name, selected });
-        await this.FETCH_ANIMALS();
+        this.FETCH_ANIMALS();
       } catch (error) {
         console.error("Error updating animal:", error);
       }
@@ -67,7 +78,7 @@ export const useAnimalsStore = defineStore("animals", {
     async DELETE_ANIMAL(id: string): Promise<void> {
       try {
         await fetch<Animal>(`/animals/${id}`, "DELETE");
-        await this.FETCH_ANIMALS(true);
+        this.FETCH_ANIMALS(true);
       } catch (error) {
         console.error("Error deleting animal:", error);
       }
