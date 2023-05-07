@@ -151,9 +151,7 @@ const editedItem = ref<Animal>({
   selected: false,
 });
 
-const formTitle = computed(() =>
-  editedIndex.value === -1 ? "New Item" : "Edit Item"
-);
+const formTitle = computed(() => editedIndex.value === -1 ? "New Item" : "Edit Item");
 
 const editItem = (item: Animal) => {
   editedIndex.value = animals.value.findIndex(({ _id }) => _id === item._id);
@@ -193,8 +191,7 @@ const save = async () => {
   let name = editedItem.value.name;
   const isEditMode = formTitle.value === "Edit Item";
 
-  const existingAnimals = animals.value.filter(
-    (animal) =>
+  const existingAnimals = animals.value.filter(animal =>
       animal.name.match(new RegExp(`^${name}(_copy)*$`, "i")) ||
       animal.name === name
   );
@@ -202,10 +199,10 @@ const save = async () => {
   const existingAnimalCount = existingAnimals.length;
 
   if (existingAnimalCount) {
-    const copySuffix = "_copy".repeat(
-      Number(`${isEditMode ? existingAnimalCount - 1 : existingAnimalCount}`)
-    );
-    name = `${name}${copySuffix}`;
+      const copySuffix = "_copy".repeat(
+      Number(`${isEditMode ? existingAnimalCount - 1 : existingAnimalCount}`));
+      
+      name = `${name}${copySuffix}`;
   }
 
   // @TODO - figure out a way to do that in Vuetify
@@ -218,7 +215,7 @@ const save = async () => {
     resetDialogState();
     return;
   }
-  await store.CREATE_ANIMAL(editedItem.value._id || "", name);
+  await store.CREATE_ANIMAL(name);
   resetDialogState();
 };
 

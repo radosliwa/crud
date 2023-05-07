@@ -43,7 +43,7 @@ describe("useAnimalsStore state and getters", () => {
 
     // CREATE
     (fetch as MockedFunction<typeof fetch>).mockResolvedValueOnce({});
-    await store.CREATE_ANIMAL("123", "Dog");
+    await store.CREATE_ANIMAL( "Dog");
     expect(fetchAnimalsSpy).toHaveBeenCalled();
 
     // UPDATE

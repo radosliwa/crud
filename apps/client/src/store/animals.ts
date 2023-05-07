@@ -31,7 +31,7 @@ export const useAnimalsStore = defineStore("animals", {
       }
     },
 
-    async CREATE_ANIMAL(id: string, name: string): Promise<void> {
+    async CREATE_ANIMAL(name: string): Promise<void> {
       // Get the count of animals with the same name or copies
       const existingAnimalCount = this.animals.filter((animal) =>
         animal.name.match(new RegExp(`^${name}\\(\\d+\\)$`, "i"))
