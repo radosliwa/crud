@@ -162,7 +162,8 @@ const editItem = (item: Animal) => {
 
 const selectItem = async (item: Animal) => {
   selectedId.value = selectedId.value === item._id ? "" : item._id || "";
-  await store.UPDATE_ANIMAL(item._id || "", item.name, item.selected);
+  if (!item._id) return;
+  await store.UPDATE_ANIMAL(item._id, item.name, item.selected);
 };
 
 const deleteItem = async (item: Animal) => {
