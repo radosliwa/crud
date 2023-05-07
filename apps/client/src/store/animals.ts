@@ -9,7 +9,7 @@ export const useAnimalsStore = defineStore("animals", {
   }),
   getters: {
     isLoading(): boolean {
-      return this.animals.length === 0 || this.loading;
+      return this.loading;
     },
     getAnimals(): Animal[] {
       return this.animals;

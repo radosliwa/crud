@@ -162,8 +162,7 @@ const editItem = (item: Animal) => {
 
 const selectItem = async (item: Animal) => {
   selectedId.value = selectedId.value === item._id ? "" : item._id || "";
-  if (!item._id) return;
-  await store.UPDATE_ANIMAL(item._id, item.name, item.selected);
+  await store.UPDATE_ANIMAL(item._id || "", item.name, item.selected);
 };
 
 const deleteItem = async (item: Animal) => {
@@ -172,8 +171,7 @@ const deleteItem = async (item: Animal) => {
 };
 
 const deleteItemConfirm = async () => {
-  if (!editedItem.value._id) return;
-  await store.DELETE_ANIMAL(editedItem.value._id);
+  await store.DELETE_ANIMAL(editedItem.value._id || "");
   resetDialogState();
 };
 
@@ -209,14 +207,12 @@ const save = async () => {
     name = `${name}${copySuffix}`;
   }
 
-  if (!editedItem.value._id) return;
-
   if (isEditMode) {
-    await store.UPDATE_ANIMAL(editedItem.value._id, name);
+    await store.UPDATE_ANIMAL(editedItem.value._id || "", name);
     resetDialogState();
     return;
   }
-  await store.CREATE_ANIMAL(editedItem.value._id, name);
+  await store.CREATE_ANIMAL(editedItem.value._id || "", name);
   resetDialogState();
 };
 </script>
