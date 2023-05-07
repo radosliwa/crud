@@ -2,13 +2,12 @@
 <template>
 	<div class="container">
 		<v-data-table v-if="!isLoading" :headers="headers" :items="animals" :sort-by="[{ key: 'name', order: 'asc' }]"
-			class="elevation-1 pb-20" style="max-width: 600px">
+			class="elevation-1 mt-10 pb-4" style="max-width: 600px">
 
 			<template v-slot:top>
 				<v-toolbar flat>
 					<v-toolbar-title>Animals CRUD</v-toolbar-title>
-					<v-divider class="mx-4" inset vertical></v-divider>
-					<v-spacer></v-spacer>
+					<v-divider inset vertical></v-divider>
 					<v-dialog v-model="dialog" max-width="500px">
 						<template v-slot:activator="{ props }">
 							<v-btn color="primary" dark class="mb-2" v-bind="props">
@@ -84,6 +83,7 @@ interface Header {
 	title: string
 	key: string
 	sortable?: boolean
+	align?: 'start' | 'end'
 }
 interface Animal {
 	_id: string;
@@ -100,6 +100,7 @@ const headers: Header[] = [
 		title: 'Actions',
 		key: 'actions',
 		sortable: false,
+		align: 'end',
 	},
 ]
 const store = useAnimalsStore()

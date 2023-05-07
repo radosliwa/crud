@@ -1,10 +1,15 @@
 {
   "private": false,
   "name": "animalia-crud",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev:client": "turbo run dev:client",
     "dev:backend": "turbo run dev:backend",
+    "test": "turbo run test",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

@@ -7,9 +7,9 @@
         </h1>
       </v-toolbar-title>
     </v-toolbar>
-    <v-main class="pa-6 d-flex justify-center align-center">
+    <v-main class="pa-6 d-flex justify-center">
       <TableContainer />
-      <v-footer :app="true" :border="true" class="bg-indigo-lighten-1 text-center d-flex flex-column pa-4">
+      <v-footer :app="true" :border="true" class="bg-blue-darken-3 text-center d-flex flex-column pa-4">
         <div class="mt-2">
           {{ new Date().getFullYear() }} — <strong>Radek Śliwa</strong>
         </div>

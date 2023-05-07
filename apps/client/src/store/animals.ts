@@ -51,7 +51,6 @@ export const useAnimalsStore = defineStore("animals", {
       if (existingAnimalCount) {
         // Update the new name to "animal(number of copy)"
         name = `${name}(${existingAnimalCount + 1})`;
-        console.log(`🟢 name`, name, existingAnimalCount);
       }
 
       try {
