@@ -43,7 +43,7 @@ describe("useAnimalsStore state and getters", () => {
 
     // CREATE
     (fetch as MockedFunction<typeof fetch>).mockResolvedValueOnce({});
-    await store.CREATE_ANIMAL( "Dog");
+    await store.CREATE_ANIMAL("Dog");
     expect(fetchAnimalsSpy).toHaveBeenCalled();
 
     // UPDATE
@@ -55,5 +55,36 @@ describe("useAnimalsStore state and getters", () => {
     (fetch as MockedFunction<typeof fetch>).mockResolvedValueOnce({});
     await store.DELETE_ANIMAL("123");
     expect(fetchAnimalsSpy).toHaveBeenCalled();
+  });
+
+  // SAVE CHANGES
+  it("should call CREATE_ANIMAL when isEditMode is false", async () => {
+    const createAnimalSpy = vi.spyOn(store, "CREATE_ANIMAL");
+    const testPayload = {
+      item: { name: "Dog" },
+      isEditMode: false,
+    };
+
+    await store.SAVE_CHANGES(testPayload);
+
+    expect(createAnimalSpy).toHaveBeenCalled();
+    expect(createAnimalSpy).toHaveBeenCalledWith(testPayload.item.name);
+  });
+
+  it("should call UPDATE_ANIMAL when isEditMode is true", async () => {
+    const updateAnimalSpy = vi.spyOn(store, "UPDATE_ANIMAL");
+    const testPayload = {
+      item: { _id: "1", name: "Dog", selected: false },
+      isEditMode: true,
+    };
+
+    await store.SAVE_CHANGES(testPayload);
+
+    expect(updateAnimalSpy).toHaveBeenCalled();
+    expect(updateAnimalSpy).toHaveBeenCalledWith(
+      testPayload.item._id,
+      testPayload.item.name,
+      testPayload.item.selected
+    );
   });
 });

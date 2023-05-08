@@ -2,7 +2,7 @@
 <template>
   <div class="container">
     <v-data-table
-      v-if="!isLoading"
+      v-if="!loading"
       :headers="headers"
       :items="animals"
       :sort-by="[{ key: 'name', order: 'asc' }]"
@@ -12,10 +12,10 @@
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Animals CRUD</v-toolbar-title>
-          <v-divider inset vertical></v-divider>
+          <v-divider inset vertical class="mr-3"></v-divider>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ props }">
-              <v-btn color="primary" dark class="mb-2" v-bind="props">
+              <v-btn color="primary" dark class="pr-4" v-bind="props">
                 New Item
               </v-btn>
             </template>
@@ -96,8 +96,8 @@
       </template>
     </v-data-table>
     <v-overlay
-      v-if="isLoading"
-      :model-value="isLoading"
+      v-if="loading"
+      :model-value="loading"
       class="align-center justify-center"
     >
       <v-progress-circular
@@ -110,35 +110,30 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
-import { useAnimalsStore } from "@/store/animals";
+import { computed, ref, watch, watchEffect } from "vue";
 import { VDataTable } from "vuetify/labs/VDataTable";
-import { storeToRefs } from "pinia";
-import { Animal, Header } from "@/types";
+import { Animal } from "@/types";
+import { headers } from "@/data";
 
-const headers: Header[] = [
-  {
-    title: "Animal Name",
-    key: "name",
-  },
-  {
-    title: "Actions",
-    key: "actions",
-    sortable: false,
-    align: "end",
-  },
-];
-const store = useAnimalsStore();
+interface Props {
+  animals: Animal[];
+  loading: boolean;
+}
 
-const { getAnimals, isLoading } = storeToRefs(store);
+interface Emits {
+  (e: "select-item", item: Animal): void;
+  (e: "delete-item", item: Animal): void;
+  (e: "save", payload: { item: Animal; isEditMode: boolean }): void;
+}
 
-const animals = computed(() => getAnimals.value);
+const emit = defineEmits<Emits>();
+
+const props = defineProps<Props>();
 
 const selectedId = ref("");
 
-onMounted(async () => {
-  await store.FETCH_ANIMALS(true);
-  selectedId.value = animals.value.find(({ selected }) => selected)?._id || "";
+watchEffect(() => {
+  selectedId.value = props.animals.find(({ selected }) => selected)?._id || "";
 });
 
 /** refs for modals */
@@ -151,17 +146,19 @@ const editedItem = ref<Animal>({
   selected: false,
 });
 
-const formTitle = computed(() => editedIndex.value === -1 ? "New Item" : "Edit Item");
+const formTitle = computed(() =>
+  editedIndex.value === -1 ? "New Item" : "Edit Item"
+);
 
 const editItem = (item: Animal) => {
-  editedIndex.value = animals.value.findIndex(({ _id }) => _id === item._id);
+  editedIndex.value = props.animals.findIndex(({ _id }) => _id === item._id);
   editedItem.value = item;
   dialog.value = true;
 };
 
 const selectItem = async (item: Animal) => {
   selectedId.value = selectedId.value === item._id ? "" : item._id || "";
-  await store.UPDATE_ANIMAL(item._id || "", item.name, item.selected);
+  emit("select-item", item);
 };
 
 const deleteItem = async (item: Animal) => {
@@ -170,7 +167,7 @@ const deleteItem = async (item: Animal) => {
 };
 
 const deleteItemConfirm = async () => {
-  await store.DELETE_ANIMAL(editedItem.value._id || "");
+  emit("delete-item", editedItem.value);
   resetDialogState();
 };
 
@@ -188,40 +185,17 @@ const resetDialogState = () => {
 };
 
 const save = async () => {
-  let name = editedItem.value.name;
   const isEditMode = formTitle.value === "Edit Item";
+  emit("save", {
+    item: editedItem.value,
+    isEditMode,
+  });
 
-  const existingAnimals = animals.value.filter(animal =>
-      animal.name.match(new RegExp(`^${name}(_copy)*$`, "i")) ||
-      animal.name === name
-  );
-
-  const existingAnimalCount = existingAnimals.length;
-
-  if (existingAnimalCount) {
-      const copySuffix = "_copy".repeat(
-      Number(`${isEditMode ? existingAnimalCount - 1 : existingAnimalCount}`));
-      
-      name = `${name}${copySuffix}`;
-  }
-
-  // @TODO - figure out a way to do that in Vuetify
-  if (name.length > 20) {
-    name = `${name.slice(0, 20)}...`;
-  }
-
-  if (isEditMode) {
-    await store.UPDATE_ANIMAL(editedItem.value._id || "", name);
-    resetDialogState();
-    return;
-  }
-  await store.CREATE_ANIMAL(name);
   resetDialogState();
 };
 
 watch(dialog, (v) => !v && resetDialogState());
 watch(dialogDelete, (v) => !v && resetDialogState());
-
 </script>
 
 <style>

@@ -23,10 +23,16 @@ export const createAnimal = async (req: Request, res: Response) => {
 export const updateAnimal = async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
-    await Animal.findOneAndUpdate(
+    // find previously selected and turn it off
+    const turnedOffAnimal = await Animal.findOneAndUpdate(
       { selected: true },
       { $set: { selected: false } }
     );
+    // toggle of previously selected animal
+    if (name === turnedOffAnimal?.name) {
+      res.json(turnedOffAnimal);
+      return;
+    }
     const updatedAnimal = await Animal.findOneAndUpdate(
       { _id: req.params.id },
       { $set: { selected: true, name } },

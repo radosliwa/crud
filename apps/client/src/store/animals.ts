@@ -71,5 +71,42 @@ export const useAnimalsStore = defineStore("animals", {
         console.error("Error deleting animal:", error);
       }
     },
+
+    async SAVE_CHANGES(payload: {
+      item: Animal;
+      isEditMode: boolean;
+    }): Promise<void> {
+      const { isEditMode, item } = payload;
+      let name = item.name;
+
+      const existingAnimals = this.animals.filter(
+        (animal) =>
+          animal.name.match(new RegExp(`^${name}(_copy)*$`, "i")) ||
+          animal.name === name
+      );
+
+      const existingAnimalCount = existingAnimals.length;
+
+      if (existingAnimalCount) {
+        const copySuffix = "_copy".repeat(
+          Number(
+            `${isEditMode ? existingAnimalCount - 1 : existingAnimalCount}`
+          )
+        );
+        name = `${name}${copySuffix}`;
+      }
+
+      // @TODO - figure out a way to do that in Vuetify
+      if (name.length > 20) {
+        name = `${name.slice(0, 20)}...`;
+      }
+
+      if (isEditMode) {
+        const id = item._id || "";
+        await this.UPDATE_ANIMAL(id, name, item.selected);
+        return;
+      }
+      await this.CREATE_ANIMAL(name);
+    },
   },
 });
