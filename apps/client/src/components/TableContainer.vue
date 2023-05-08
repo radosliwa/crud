@@ -6,7 +6,7 @@
       :headers="headers"
       :items="animals"
       :sort-by="[{ key: 'name', order: 'asc' }]"
-      class="elevation-1 mt-10 pb-4"
+      class="elevation-1 mt-8 pb-4"
       style="max-width: 600px"
     >
       <template v-slot:top>
@@ -150,6 +150,8 @@ const formTitle = computed(() =>
   editedIndex.value === -1 ? "New Item" : "Edit Item"
 );
 
+const isEditMode = computed(() => formTitle.value === "Edit Item");
+
 const editItem = (item: Animal) => {
   editedIndex.value = props.animals.findIndex(({ _id }) => _id === item._id);
   editedItem.value = item;
@@ -185,10 +187,9 @@ const resetDialogState = () => {
 };
 
 const save = async () => {
-  const isEditMode = formTitle.value === "Edit Item";
   emit("save", {
     item: editedItem.value,
-    isEditMode,
+    isEditMode: isEditMode.value,
   });
 
   resetDialogState();
@@ -200,7 +201,8 @@ watch(dialogDelete, (v) => !v && resetDialogState());
 
 <style>
 .container {
-  height: calc(100vh + 60px);
+  min-height: 100vh;
+  margin-bottom: 60px;
 }
 
 .v-application .v-theme--dark tr,

@@ -1,5 +1,3 @@
-// src/controllers/animalController.ts
-
 import { Request, Response } from "express";
 import Animal from "../models/Animal";
 import { errorHelper } from "../utils/errorHelper";
@@ -14,6 +12,8 @@ export const createAnimal = async (req: Request, res: Response) => {
   try {
     const animal = new Animal({ name });
     const newAnimal = await animal.save();
+    if(!newAnimal) throw new Error("Error saving animal")
+
     res.status(201).json(newAnimal);
   } catch (err: unknown) {
     errorHelper(err, res);
@@ -47,6 +47,11 @@ export const updateAnimal = async (req: Request, res: Response) => {
 };
 
 export const deleteAnimal = async (req: Request, res: Response) => {
-  await Animal.findByIdAndDelete(req.params.id);
-  res.status(204).json({ message: "Animal deleted" });
+  try {
+    const deletedAnimal = await Animal.findByIdAndDelete(req.params.id);
+    if (!deletedAnimal) throw new Error("No animal found");
+    res.status(204).json({ message: "Animal deleted" });
+  } catch (error: unknown) {
+    errorHelper(error, res);
+  }
 };

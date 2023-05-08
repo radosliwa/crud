@@ -14,11 +14,10 @@
     "test": {
       "cache": false
     },
-    "build": {},
-    "lint": {},
-    "build:all": {
-      "dependsOn": ["build"]
-    }
+    "build": {
+      "outputMode": "new-only"
+    },
+    "lint": {}
   },
   "globalDependencies": [".eslintrc.js", ".env"]
 }

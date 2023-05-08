@@ -1,81 +1,88 @@
-# Turborepo starter
 
-This is an official starter Turborepo.
+#   CRUD app with VUE3 + EXPRESS + Turborepo
 
-## Using this example
+This README will guide you through the process of setting up and running a **CRUD - technical assessment project**. Please follow the steps below to get started. 
 
-Run the following command:
+**Make sure to check your email for the instruction on the required environment variables!!!**
 
-```sh
-npx create-turbo@latest
-```
+## Prerequisites
 
-## What's inside?
+Before starting, make sure you have the following tools (at least major versions) installed on your system:
 
-This Turborepo includes the following packages/apps:
+1.  `Node.js v18.16.0`
+2.  `pnpm v7.15.0`
 
-### Apps and Packages
+These are the exact ones the app was run on.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+If you don't have the required versions installed, you can follow the instructions below to set them up:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Install Node.js
 
-### Utilities
+Download the appropriate installer for your operating system from the official [Node.js downloads page](https://nodejs.org/en/download/).
 
-This Turborepo has some additional tools already setup for you:
+### Install pnpm
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+After installing Node.js, you can install pnpm using the following command:
 
-### Build
+`npm install -g pnpm@7.15.0` 
 
-To build all apps and packages, run the following command:
+For macOS users, you can also install pnpm using Homebrew:
 
-```
-cd my-turborepo
-pnpm build
-```
+`brew install pnpm@7.15.0` 
 
-### Develop
+## Setting Up the Project
 
-To develop all apps and packages, run the following command:
+Follow these steps to set up the project:
 
-```
-cd my-turborepo
-pnpm dev
-```
+1.  Clone the CRUD project using Git (if applicable) or download the project files from [this repository](https://github.com/radosliwa/crud)
 
-### Remote Caching
+`git clone https://github.com/radosliwa/crud.git ` 
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+2.  Change to the project directory.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+`cd crud` 
 
-```
-cd my-turborepo
-npx turbo login
-```
+3.  Install dependencies using pnpm.
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+`pnpm install` 
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+4.  Set up the environment variables based on the instructional mail you received. 
 
-```
-npx turbo link
-```
+## Running, testing, linting & builing the Project
 
-## Useful Links
+1. After setting up the project, you can now run it using the following command from the project's root:
+`pnpm run dev` 
+It will run backend  (port 5000) and frontend (port 3000) simultaneously. 
 
-Learn more about the power of Turborepo:
+**If you're not sure about the environment client is running on go to point 2 and run them in separate terminals!!**
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+2. You can also run them separately:
+`pnpm run dev:client`
+`pnpm run dev:backend` 
+
+3. In order to run tests enter the the following command from the project's root:
+`pnpm run test`
+
+4. In order to lint project enter the the following command from the project's root:
+`pnpm run lint`
+
+5. In order to build both apps the the following command from the project's root:
+`pnpm run build`
+
+## Troubleshooting
+
+If you run into issues while setting up or running the CRUD project, consider the following troubleshooting steps:
+
+1.  **Double-check the environment variables** in your `.env` files in `apps/client` and `apps/backend`. Make sure they match the values provided in the instructional mail.
+    
+2.  Ensure you have the correct versions of `Node.js (v18.16.0)` and `pnpm (v7.15.0)` installed. You can check the installed versions by running:
+`node -v`
+`pnpm -v` 
+3.  If you encounter errors regarding Turborepo itself try to consult [the official docs](https://turbo.build/repo/docs/troubleshooting)
+4. If you're not sure about the port that app is running on **try running frontend and backend separately (paragraph above) and investigate the terminal**
+5.  If you still cannot resolve the issue, create an issue on the project's repository detailing the problem and any relevant error messages.
+
+## @TODOs
+1. figure out a way to make Vuetify 3 work with Vitest so that unit tests can be written
+2. add functionality for all items removal
+3. fix forcing selected state on an edited item if it's not selected

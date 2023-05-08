@@ -7,7 +7,7 @@
       class="bg-indigo d-flex"
     >
       <v-toolbar-title>
-        <h1 class="text-h4">CRUD for a list - technical assessment</h1>
+        <h1 class="text-h4">Technical assessment</h1>
       </v-toolbar-title>
     </v-toolbar>
     <v-main class="pa-6 d-flex justify-center">

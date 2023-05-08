@@ -8,7 +8,7 @@ vi.mock("@/utils/fetch", () => ({
 }));
 
 describe("useAnimalsStore state and getters", () => {
-  let pinia: Pinia | null | undefined;
+  let pinia: Pinia | undefined;
   let store: ReturnType<typeof useAnimalsStore>;
 
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe("useAnimalsStore state and getters", () => {
       item: { name: "Dog" },
       isEditMode: false,
     };
-
+    (fetch as MockedFunction<typeof fetch>).mockResolvedValueOnce({});
     await store.SAVE_CHANGES(testPayload);
 
     expect(createAnimalSpy).toHaveBeenCalled();
@@ -77,7 +77,7 @@ describe("useAnimalsStore state and getters", () => {
       item: { _id: "1", name: "Dog", selected: false },
       isEditMode: true,
     };
-
+    (fetch as MockedFunction<typeof fetch>).mockResolvedValueOnce({});
     await store.SAVE_CHANGES(testPayload);
 
     expect(updateAnimalSpy).toHaveBeenCalled();
