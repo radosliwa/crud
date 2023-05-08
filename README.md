@@ -60,7 +60,7 @@ pnpm run dev
 ```
 It will run **backend  (port 5000)** and **frontend (port 3000)** simultaneously. 
 
-**If you're not sure about the environment client is running on go to point 2 and run them in separate terminals!!**
+** ⚠️ If you're not sure about the environment client is running on go to point 2 and run them in separate terminals!! ⚠️**
 
 2. You can also run them separately:
 ```
