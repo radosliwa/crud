@@ -51,7 +51,7 @@ Follow these steps to set up the project:
 ## Running, testing, linting & builing the Project
 
 1. After setting up the project, you can now run it using the following command from the project's root:
-`pnpm run dev` 
+`pnpm run dev`
 It will run backend  (port 5000) and frontend (port 3000) simultaneously. 
 
 **If you're not sure about the environment client is running on go to point 2 and run them in separate terminals!!**
