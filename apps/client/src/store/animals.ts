@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import fetch from "@/utils/fetch";
-import { Animal, AnimalsState } from "@/types";
+import { Animal, AnimalsState } from "shared-types";
 
 export const useAnimalsStore = defineStore("animals", {
   state: (): AnimalsState => ({

@@ -1,15 +1,6 @@
 <template>
   <v-app>
-    <v-toolbar
-      dark
-      prominent
-      image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
-      class="bg-indigo d-flex"
-    >
-      <v-toolbar-title>
-        <h1 class="text-h4">Technical assessment</h1>
-      </v-toolbar-title>
-    </v-toolbar>
+    <mf-header></mf-header>
     <v-main class="pa-6 d-flex justify-center">
       <TableContainer
         :animals="animals"
@@ -36,8 +27,8 @@ import TableContainer from "@/components/TableContainer.vue";
 import { storeToRefs } from "pinia";
 import { computed, onMounted } from "vue";
 import { useAnimalsStore } from "./store";
-import { Animal } from "./types";
-
+import { Animal } from "shared-types";
+import { MfHeader } from "mf-header";
 const store = useAnimalsStore();
 
 const { getAnimals, isLoading } = storeToRefs(store);

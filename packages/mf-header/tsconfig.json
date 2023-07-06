@@ -1,0 +1,13 @@
+{
+  "extends": "tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+    "lib": ["DOM.Iterable", "DOM"]
+  },
+  "exclude": ["node_modules"],
+  "include": ["vite.config.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+
+}

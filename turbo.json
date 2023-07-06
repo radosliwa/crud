@@ -4,6 +4,9 @@
     "dev:client": {
       "cache": false
     },
+    "dev:client:mf": {
+      "cache": false
+    },
     "dev:backend": {
       "cache": false
     },

@@ -112,7 +112,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, watchEffect } from "vue";
 import { VDataTable } from "vuetify/labs/VDataTable";
-import { Animal } from "@/types";
+import { Animal } from "shared-types";
 import { headers } from "@/data";
 
 interface Props {

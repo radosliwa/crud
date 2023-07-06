@@ -9,10 +9,12 @@ interface AnimalsState {
   animals: Animal[];
   loading: boolean;
 }
+
 interface Header {
   title: string;
   key: string;
   sortable?: boolean;
   align?: "start" | "end";
 }
+
 export type { Animal, AnimalsState, Header };

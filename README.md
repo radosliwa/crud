@@ -1,7 +1,7 @@
 
 #   CRUD app with VUE3 + EXPRESS + Turborepo
 
-This README will guide you through the process of setting up and running a **CRUD - technical assessment project**. Please follow the steps below to get started. 
+This README will guide you through the process of setting up and running a **CRUD - Turborepo project**. Please follow the steps below to get started. 
 
 **Make sure to check your email for the instruction on the required environment variables!!!**
 

@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev:client": "turbo run dev:client",
+    "dev:client:mf": "turbo run dev:client:mf",
     "dev:backend": "turbo run dev:backend",
     "test": "turbo run test",
     "dev": "turbo run dev",
@@ -11,11 +12,11 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "prettier": "^2.5.1",
-    "turbo": "^1.9.3",
-    "@vue/eslint-config-typescript": "^11.0.0",
-    "eslint": "^8.0.0",
-    "eslint-plugin-vue": "^9.0.0"
+    "@vue/eslint-config-typescript": "^11.0.3",
+    "eslint": "^8.44.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "prettier": "^2.8.8",
+    "turbo": "^1.10.7"
   },
   "packageManager": "pnpm@7.15.0"
 }

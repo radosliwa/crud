@@ -1,4 +1,4 @@
-import { Header } from "@/types";
+import { Header } from "shared-types";
 
 const headers: Header[] = [
   {
