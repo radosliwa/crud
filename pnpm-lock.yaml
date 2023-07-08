@@ -156,7 +156,10 @@ importers:
       typescript: 5.0.4
 
   packages/tsconfig:
-    specifiers: {}
+    specifiers:
+      '@types/node': ^20.4.1
+    dependencies:
+      '@types/node': 20.4.1
 
 packages:
 
@@ -775,6 +778,10 @@ packages:
 
   /@types/node/18.16.4:
     resolution: {integrity: sha512-LUhvPmAKAbgm+p/K11IWszLZVoZDlMF4NRmqbhEzDz/CnCuehPkZXwZbBCKGJsgjnuVejotBwM7B3Scrq4EqDw==}
+
+  /@types/node/20.4.1:
+    resolution: {integrity: sha512-JIzsAvJeA/5iY6Y/OxZbv1lUcc8dNSE77lb2gnBH+/PJ3lFR1Ccvgwl5JWnHAkNHcRsT0TbpVOsiMKZ1F/yyJg==}
+    dev: false
 
   /@types/qs/6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}

@@ -29,6 +29,7 @@ import { computed, onMounted } from "vue";
 import { useAnimalsStore } from "./store";
 import { Animal } from "shared-types";
 import { MfHeader } from "mf-header";
+
 const store = useAnimalsStore();
 
 const { getAnimals, isLoading } = storeToRefs(store);
